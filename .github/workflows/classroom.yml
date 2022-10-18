@@ -15,7 +15,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      # TODO build, test and deploy project
+      - name: Setup Python 3
+        uses: actions/setup-python@v2
+        with:
+           python-version: 3.8
+
+      - name: Install
+        run: |
+            pip install .
+            pip install -r requirements_dev.txt
+
+      - name: Run tests
+        run: |
+            pytest .
+
+      - name: Deploy project
+        uses: akhileshns/heroku-deploy@v3.4.6
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          usedocker: true
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
